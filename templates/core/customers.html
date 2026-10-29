@@ -1,0 +1,7 @@
+{% extends "base.html" %}
+{% block title %}Customers | WADI INVESTMENT{% endblock %}
+{% block content %}
+<div class="dashboard-head"><div><div class="eyebrow">CUSTOMER RECORDS</div><h1>Customers</h1><p class="muted">Search and manage customer details.</p></div><a class="button primary" href="{% url 'customer_create' %}">+ Register customer</a></div>
+<form method="get" class="searchbar"><input name="q" value="{{ query }}" placeholder="Search name, phone or National ID"><button class="button primary" type="submit">Search</button>{% if query %}<a class="button outline" href="{% url 'customers' %}">Clear</a>{% endif %}</form>
+<section class="card table-card"><div class="table-wrap"><table><thead><tr><th>Customer</th><th>Phone</th><th>National ID</th><th>Address</th><th>Added</th></tr></thead><tbody>{% for customer in customers %}<tr><td><strong>{{ customer.first_name }} {{ customer.last_name }}</strong></td><td>{{ customer.phone }}</td><td>{{ customer.national_id|default:"—" }}</td><td>{{ customer.address|default:"—" }}</td><td>{{ customer.created_at|date:"d M Y" }}</td></tr>{% empty %}<tr><td colspan="5">No customers found. Use “Register customer” to add one.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

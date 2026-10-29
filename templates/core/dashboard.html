@@ -1,0 +1,147 @@
+
+{% extends "base.html" %}
+
+{% block title %}Dashboard | WADI INVESTMENT{% endblock %}
+
+{% block content %}
+
+<div class="dashboard-head">
+    <div>
+        <div class="eyebrow">OVERVIEW</div>
+        <h1>Dashboard</h1>
+        <p class="muted">
+            Welcome, {{ request.user.first_name|default:request.user.username }}.
+        </p>
+    </div>
+
+    <a class="button outline" href="{% url 'logout' %}">Sign out</a>
+</div>
+
+<!-- DASHBOARD STATISTICS -->
+<div class="grid">
+
+    <section class="stat-card">
+        <div class="stat-label">Total Customers</div>
+        <div class="stat-value">{{ customer_count }}</div>
+        <p>Registered customer records.</p>
+    </section>
+
+    <section class="stat-card">
+        <div class="stat-label">Active Loans</div>
+        <div class="stat-value">{{ active_loan_count }}</div>
+        <p>Loans with outstanding balances.</p>
+    </section>
+
+    <section class="stat-card">
+        <div class="stat-label">Overdue Loans</div>
+        <div class="stat-value">{{ overdue_count }}</div>
+        <p>Loans that have passed their due date.</p>
+    </section>
+
+    <section class="stat-card">
+        <div class="stat-label">Collected Today</div>
+        <div class="stat-value">
+            KSh {{ collected_today|floatformat:2 }}
+        </div>
+        <p>Payments received today.</p>
+    </section>
+
+    <section class="stat-card">
+        <div class="stat-label">Total Lent</div>
+        <div class="stat-value">
+            KSh {{ total_lent|floatformat:2 }}
+        </div>
+        <p>Total principal issued to customers.</p>
+    </section>
+
+    <section class="stat-card">
+        <div class="stat-label">Outstanding Balance</div>
+        <div class="stat-value">
+            KSh {{ total_outstanding|floatformat:2 }}
+        </div>
+        <p>Money remaining to be collected.</p>
+    </section>
+
+</div>
+
+<!-- QUICK ACTIONS -->
+<section class="card next-card">
+    <h2>Quick Actions</h2>
+    <p>Manage customers, issue loans, and record daily repayments.</p>
+
+    <div class="actions">
+        <a class="button primary" href="{% url 'customer_create' %}">
+            + Register Customer
+        </a>
+
+        <a class="button primary" href="{% url 'customers' %}">
+            View Customers
+        </a>
+
+        <a class="button primary" href="{% url 'loan_create' %}">
+            + Issue Loan
+        </a>
+
+        <a class="button outline" href="{% url 'loans' %}">
+            View All Loans
+        </a>
+
+        {% if request.user.is_superuser %}
+            <a class="button outline" href="/admin/">
+                Administrator Panel
+            </a>
+        {% endif %}
+    </div>
+</section>
+
+<!-- RECENT LOANS -->
+<section class="card next-card">
+    <h2>Recent Loans</h2>
+
+    {% if recent_loans %}
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Customer</th>
+                        <th>Principal</th>
+                        <th>Outstanding</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for loan in recent_loans %}
+                        <tr>
+                            <td>{{ loan.customer }}</td>
+
+                            <td>
+                                KSh {{ loan.principal|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                KSh {{ loan.balance|floatformat:2 }}
+                            </td>
+
+                            <td>
+                                {% if loan.balance <= 0 %}
+                                    <span class="badge">Paid</span>
+                                {% elif loan.is_overdue %}
+                                    <span class="badge overdue">Overdue</span>
+                                {% else %}
+                                    <span class="badge">Active</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <p class="muted">
+            No loans have been issued yet. Once you issue a loan, it will appear here.
+        </p>
+    {% endif %}
+</section>
+
+{% endblock %}

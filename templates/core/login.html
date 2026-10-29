@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}Agent Login | WADI INVESTMENT{% endblock %}
+{% block content %}
+<section class="card auth-card">
+  <div class="eyebrow">STAFF PORTAL</div>
+  <h1>Welcome back</h1>
+  <p class="muted">Sign in to manage customers, loans, and daily collections.</p>
+  {% if error %}<div class="error">{{ error }}</div>{% endif %}
+  <form method="post">
+    {% csrf_token %}
+    <label for="username">Username</label>
+    <input id="username" name="username" autocomplete="username" required>
+    <label for="password">Password</label>
+    <input id="password" type="password" name="password" autocomplete="current-password" required>
+    <button class="button primary full" type="submit">Sign in</button>
+  </form>
+  <p class="form-bottom">New agent? <a href="{% url 'register' %}">Register here</a></p>
+  <p class="small muted">New accounts require administrator approval before access is granted.</p>
+</section>
+{% endblock %}

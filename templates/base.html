@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>{% block title %}WADI INVESTMENT{% endblock %}</title>
+
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+
+<body>
+
+    <!-- TOP HEADER -->
+    <header class="topbar">
+        <a class="brand" href="{% url 'home' %}">
+            WADI <span>INVESTMENT</span>
+        </a>
+
+        <div class="brand-subtitle">
+            LOAN MANAGEMENT &amp; DAILY COLLECTIONS
+        </div>
+    </header>
+
+    <!-- MAIN PAGE CONTENT -->
+    <main class="page">
+
+        <!-- BACK BUTTON -->
+        <div class="page-navigation">
+            <button
+                type="button"
+                class="button back-button"
+                onclick="goBack()">
+                &#8592; Back
+            </button>
+        </div>
+
+        <!-- SUCCESS AND ERROR MESSAGES -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="notice {{ message.tags }}">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- EACH PAGE'S CONTENT APPEARS HERE -->
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        WADI INVESTMENT &middot; Authorized staff only
+    </footer>
+
+    <!-- BACK BUTTON FUNCTION -->
+    <script>
+        function goBack() {
+            const previousPage = document.referrer;
+
+            if (previousPage) {
+                try {
+                    const previousURL = new URL(previousPage);
+
+                    if (previousURL.origin === window.location.origin) {
+                        window.history.back();
+                        return;
+                    }
+                } catch (error) {
+                    // If the previous address is invalid, use the fallback.
+                }
+            }
+
+            window.location.href = "{% url 'home' %}";
+        }
+    </script>
+
+</body>
+</html>

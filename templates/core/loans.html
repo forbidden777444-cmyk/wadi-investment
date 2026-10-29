@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}Loans & Payments | WADI INVESTMENT{% endblock %}
+{% block content %}
+<div class="dashboard-head"><div><div class="eyebrow">LENDING & COLLECTIONS</div><h1>Loans & Payments</h1><p class="muted">Track balances, missed instalments and payment history.</p></div><a class="button primary" href="{% url 'loan_create' %}">+ Issue a loan</a></div>
+<div class="filter-links"><a class="button outline" href="{% url 'loans' %}">All loans</a><a class="button outline" href="?status=active">Active</a><a class="button outline" href="?status=overdue">Overdue</a><a class="button outline" href="?status=paid">Paid</a></div>
+<section class="card table-card"><div class="table-wrap"><table><thead><tr><th>Loan / Customer</th><th>Issued</th><th>Principal</th><th>Interest</th><th>Total due</th><th>Paid</th><th>Balance</th><th>Next due incl. arrears</th><th>Status</th><th>Action</th></tr></thead><tbody>
+{% for loan in loans %}<tr><td><strong>#{{ loan.id }} · {{ loan.customer.first_name }} {{ loan.customer.last_name }}</strong><br><span class="muted small">{{ loan.customer.phone }}</span></td><td>{{ loan.issued_on }}</td><td>KSh {{ loan.principal|floatformat:2 }}</td><td>KSh {{ loan.interest_amount|floatformat:2 }}</td><td>KSh {{ loan.total_due|floatformat:2 }}</td><td>KSh {{ loan.amount_paid|floatformat:2 }}</td><td><strong>KSh {{ loan.balance|floatformat:2 }}</strong></td><td>KSh {{ loan.next_payment_due|floatformat:2 }}</td><td>{% if loan.balance <= 0 %}<span class="badge paid">Paid</span>{% elif loan.is_overdue %}<span class="badge overdue">Overdue · KSh {{ loan.overdue_amount|floatformat:2 }}</span>{% else %}<span class="badge active">Active</span>{% endif %}</td><td>{% if loan.balance > 0 %}<a class="button small-button primary" href="{% url 'payment_create' loan.id %}">Record payment</a>{% else %}—{% endif %}</td></tr>
+{% empty %}<tr><td colspan="10">No loans match this filter.</td></tr>{% endfor %}</tbody></table></div></section>
+<p class="help">“Next due incl. arrears” is the scheduled daily instalment plus any unpaid scheduled instalments. Overdue tracking does not add interest or penalties.</p>
+{% endblock %}

@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ title }} | WADI INVESTMENT{% endblock %}
+{% block content %}
+<div class="form-layout"><section class="card form-card"><div class="eyebrow">WADI INVESTMENT</div><h1>{{ title }}</h1><p class="muted">{{ intro }}</p>
+<form method="post">{% csrf_token %}{% if form.non_field_errors %}<div class="error">{{ form.non_field_errors }}</div>{% endif %}
+{% for field in form %}<div class="form-field"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<div class="help">{{ field.help_text }}</div>{% endif %}{% for error in field.errors %}<div class="field-error">{{ error }}</div>{% endfor %}</div>{% endfor %}
+<button class="button primary full" type="submit">{{ button_text|default:"Save" }}</button><a class="button outline full" href="{% if loan %}{% url 'loans' %}{% elif title == 'Register customer' %}{% url 'customers' %}{% else %}{% url 'dashboard' %}{% endif %}">Cancel</a></form></section>
+{% if title == "Issue a loan" %}<aside class="card side-info"><h2>Loan calculation</h2><p>Interest is fixed at <strong>25%</strong> of the original principal.</p><p>Repayment period: <strong>30 days</strong>.</p><p>Example: KSh 20,000 principal + KSh 5,000 interest = KSh 25,000 total, approximately KSh 833.33 per day.</p><p class="help">The daily amount is rounded to cents; the final scheduled day accounts for any rounding difference.</p></aside>{% endif %}
+</div>
+{% endblock %}
